@@ -1,4 +1,7 @@
 #! /bin/bash
+# author: raoxiaoya
+# this shell script is used to manage this server.
+# usage: ./bin/man stop|start|restart|help|status
 
 # 进程名称
 process_name="main"
