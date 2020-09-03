@@ -1,0 +1,131 @@
+#! /bin/bash
+
+# 进程名称
+process_name="main"
+# 执行程序文件
+process_file="./main"
+readonly process_name
+readonly process_file
+
+count=0
+pid=0
+msg="msg: the process num of ${process_name} is not eq 1, please check it ..."
+
+help()
+{
+cat <<- EOF
+
+Usage:
+    ./main.sh [Options]
+Options:
+    start     Start server
+    stop      Stop server
+    restart   Restart server
+    status    Status check
+    help      Help document
+
+EOF
+    return $!
+}
+
+count()
+{
+  count=$(ps -ef | grep "${process_name}" | grep -v "grep" | wc -l)
+}
+
+check()
+{
+  count
+  if [ "$count" == 0 ]; then
+    echo "msg: the process of ${process_name} is stopped"
+    exit 0
+  elif [ "$count" == 1 ]; then
+    return 1
+  else
+    echo "$msg"
+    exit 2
+  fi
+}
+
+getPid()
+{
+  pid=$(ps -ef | grep "${process_name}" | grep -v "grep" | awk '{print $2}')
+}
+
+start()
+{
+  count
+  if [ "$count" -ge 1 ]; then
+    echo "the process of ${process_name} is already running ..."
+    getPid
+    echo "the pid of ${process_name} is: ${pid}"
+  else
+    nohup ${process_file} > /dev/null 2>&1 &
+
+    count
+    while [ "$count" -eq 0 ]; do
+        count
+        sleep 1
+    done
+
+    status
+  fi
+}
+
+stop()
+{
+  check
+  getPid
+  kill -SIGINT "${pid}"
+
+  count
+  while [ "$count" -gt 0 ]; do
+      count
+      sleep 1
+  done
+
+  status
+}
+
+restart()
+{
+  check
+  getPid
+  kill -SIGHUP "${pid}"
+
+  count
+  while [ "$count" -ne 1 ]; do
+      count
+      sleep 1
+  done
+
+  status
+}
+
+status()
+{
+  check
+  echo "the process of ${process_name} is running ..."
+  getPid
+  echo "the pid of ${process_name} is: ${pid}"
+}
+
+case $1 in
+  "start")
+    start
+  ;;
+  "stop")
+    stop
+    ;;
+  "restart")
+    restart
+    ;;
+  "status")
+    status
+    ;;
+  *)
+    help
+    ;;
+esac
+
+exit 0
