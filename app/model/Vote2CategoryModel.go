@@ -20,7 +20,7 @@ func (Vote2CategoryModel) TableName() string {
 	return "vote2_category"
 }
 
-func (m *Vote2CategoryModel) GetCategoryByActivityId(activityId int) []Vote2CategoryModel {
+func (m Vote2CategoryModel) GetCategoryByActivityId(activityId int) []Vote2CategoryModel {
 	db = mysqlUtil.GetMysqlConn()
 
 	list := make([]Vote2CategoryModel, 0)

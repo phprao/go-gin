@@ -8,7 +8,11 @@ import (
 )
 
 func main() {
-	cmd := os.Args[1]
+	var cmd string
+	if len(os.Args) > 2 {
+		cmd = os.Args[1]
+	}
+
 	if cmd == "" || cmd == "serve" {
 		server.RunWithGraceful()
 	} else {

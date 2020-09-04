@@ -31,7 +31,7 @@ func initParam() string {
 	// 注册路由
 	routes.RegisterRoutes(GRouter)
 
-	// 启动服务
+	// 服务配置
 	server := configs.GetServerConfig("http")
 	serverAddr := server.Host + ":" + server.Port
 

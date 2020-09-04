@@ -11,20 +11,25 @@ const RESPONSE_CODE_NOT_FOUND = 404
 const RESPONSE_CODE_SYSTEM = 500
 const RESPONSE_CODE_ERROR = 5000
 
-func JsonResponseError(c *gin.Context, msg string, code int) {
+var Context *gin.Context
+
+func JsonResponseError(msg string, code ...int) {
 	result := make(map[string]interface{})
-	result["code"] = code
+	if len(code) == 0 {
+		code = append(code, RESPONSE_CODE_ERROR)
+	}
+	result["code"] = code[0]
 	result["msg"] = msg
 	result["data"] = ""
 
-	c.JSON(http.StatusOK, result)
+	Context.JSON(http.StatusOK, result)
 }
 
-func JsonResponseSuccess(c *gin.Context, data interface{}) {
+func JsonResponseSuccess(data interface{}) {
 	result := make(map[string]interface{})
 	result["code"] = 0
 	result["msg"] = ""
 	result["data"] = data
 
-	c.JSON(http.StatusOK, result)
+	Context.JSON(http.StatusOK, result)
 }
